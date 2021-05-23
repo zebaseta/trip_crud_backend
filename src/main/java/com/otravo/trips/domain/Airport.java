@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Airport implements AbmEntity<Airport> {
+public class Airport implements CrudEntity<Airport> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +27,10 @@ public class Airport implements AbmEntity<Airport> {
     public Airport(String code, String name) {
         this.code = code;
         this.name = name;
+    }
+
+    public Airport(String code) {
+        this.code = code;
     }
 
 

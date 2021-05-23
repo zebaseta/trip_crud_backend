@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "airports")
+@Table(name = "airlines")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Airline implements AbmEntity<Airline> {
+public class Airline implements CrudEntity<Airline> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +27,10 @@ public class Airline implements AbmEntity<Airline> {
     public Airline(String code, String name) {
         this.code = code;
         this.name = name;
+    }
+
+    public Airline(String code) {
+        this.code = code;
     }
 
 

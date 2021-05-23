@@ -3,7 +3,7 @@ package com.otravo.trips.controllers.api;
 import com.otravo.trips.controllers.models.AirlineModel;
 import com.otravo.trips.domain.Airline;
 import com.otravo.trips.exceptions.DomainException;
-import com.otravo.trips.exceptions.ServiceException;
+import com.otravo.trips.exceptions.BusinessLogicException;
 import com.otravo.trips.services.CrudServiceTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +23,8 @@ public class AirlineController {
 
     @GetMapping()
     public List<AirlineModel> findAll() {
-        List<Airline> countries = crudService.findAll();
-        return countries.stream().map(AirlineModel::buildFromEntity).collect(Collectors.toList());
+        List<Airline> airlines = crudService.findAll();
+        return airlines.stream().map(AirlineModel::buildFromEntity).collect(Collectors.toList());
     }
 
     @PostMapping()
@@ -34,7 +34,7 @@ public class AirlineController {
             return AirlineModel.buildFromEntity(resultBD);
         } catch (DomainException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The entity is not ok: " + e.getMessage());
-        } catch (ServiceException e) {
+        } catch (BusinessLogicException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There was a problem creating the entity: " + e.getMessage());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There was a problem creating the entity");

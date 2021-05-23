@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import com.otravo.trips.domain.Airport;
 import com.otravo.trips.exceptions.DomainException;
-import com.otravo.trips.exceptions.ServiceException;
+import com.otravo.trips.exceptions.BusinessLogicException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,8 +23,8 @@ public class AirportController {
 
     @GetMapping()
     public List<AirportModel> findAll() {
-        List<Airport> countries = crudService.findAll();
-        return countries.stream().map(AirportModel::buildFromEntity).collect(Collectors.toList());
+        List<Airport> aiports = crudService.findAll();
+        return aiports.stream().map(AirportModel::buildFromEntity).collect(Collectors.toList());
     }
 
     @PostMapping()
@@ -34,7 +34,7 @@ public class AirportController {
             return AirportModel.buildFromEntity(resultBD);
         } catch (DomainException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The entity is not ok: " + e.getMessage());
-        } catch (ServiceException e) {
+        } catch (BusinessLogicException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There was a problem creating the entity: " + e.getMessage());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There was a problem creating the entity");

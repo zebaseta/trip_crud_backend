@@ -6,13 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
-@Table(name = "fligths")
+@Table(name = "flights")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Flight implements AbmEntity<Flight> {
+public class Flight implements CrudEntity<Flight> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,37 +22,68 @@ public class Flight implements AbmEntity<Flight> {
   @Column(nullable = false, unique = true)
   private String code;
 
-  @Column(nullable = false, unique = true)
-  private FligthPoint startingPoint;
+  @Column(nullable = false, name = "origin_date")
+  private Date originDate;
 
-  @Column(nullable = false, unique = true)
-  private FligthPoint arrivalPoint;
+  @ManyToOne
+  @JoinColumn(nullable = false, name = "origin_airport_id")
+  private Airport originAirport;
 
-  public Flight(String code, FligthPoint startingPoint, FligthPoint arrivalPoint) {
+  @Column(nullable = false, name = "destination_date")
+  private Date destinationDate;
+
+  @ManyToOne
+  @JoinColumn(nullable = false, name = "destination_airport_id")
+  private Airport destinationAirport;
+
+  @ManyToOne
+  @JoinColumn(nullable = false, unique = true)
+  private Airline airline;
+
+  public Flight(
+      String code,
+      Date originDate,
+      Airport originAirport,
+      Date destinationDate,
+      Airport destinationAirport,
+      Airline airline) {
     this.code = code;
-    this.startingPoint = startingPoint;
-    this.arrivalPoint = arrivalPoint;
+    this.originDate = originDate;
+    this.originAirport = originAirport;
+    this.destinationDate = destinationDate;
+    this.destinationAirport = destinationAirport;
+    this.airline = airline;
   }
 
   @Override
   public void throwErrorIfCreationIsNotOk() throws DomainException {
     if (code == null) throw new DomainException("Code cannot be null");
-    if (startingPoint == null) throw new DomainException("Starting point cannot be null");
-    if (arrivalPoint == null) throw new DomainException("Arribal point cannot be null");
-    startingPoint.throwErrorIfCreationIsNotOk();
-    arrivalPoint.throwErrorIfCreationIsNotOk();
+    if (airline == null) throw new DomainException("Airline point cannot be null");
+    if (originDate == null) throw new DomainException("Origin date cannot be null");
+    if (destinationDate == null) throw new DomainException("Destination date cannot be null");
+    if (originAirport == null) throw new DomainException("Origin airport cannot be null");
+    if (destinationAirport == null) throw new DomainException("Destination airport cannot be null");
+    originAirport.throwErrorIfCreationIsNotOk();
+    destinationAirport.throwErrorIfCreationIsNotOk();
   }
 
   @Override
   public void throwErrorIfUpdatingIsNotOk() throws DomainException {
-    if (code == null && startingPoint == null && arrivalPoint == null) throw new DomainException("No attributes were modified");
+    /*if (code == null && originPoint == null && destinationPoint == null && airline == null)
+      throw new DomainException("No attributes were modified");
+    if (originPoint != null) originPoint.throwErrorIfUpdatingIsNotOk();
+    if (destinationPoint != null) destinationPoint.throwErrorIfUpdatingIsNotOk();*/
   }
 
   @Override
   public void updateFromEntity(Flight newData) {
     if (newData.getCode() != null) code = newData.getCode();
-    if (newData.getStartingPoint() != null) startingPoint = newData.getStartingPoint();
-    if (newData.getArrivalPoint() != null) arrivalPoint = newData.getArrivalPoint();
+    if (newData.getOriginAirport() != null) originAirport = newData.getOriginAirport();
+    if (newData.getDestinationAirport() != null)
+      destinationAirport = newData.getDestinationAirport();
+    if (newData.getOriginDate() != null) originDate = newData.getOriginDate();
+    if (newData.getDestinationDate() != null) destinationDate = newData.getDestinationDate();
+    if (newData.getAirline() != null) airline = newData.getAirline();
   }
 
   @Override

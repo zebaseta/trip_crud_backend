@@ -17,9 +17,7 @@ public class JettyServer {
     private int port = 8080;
     private String contextPath = "/";
     private Class<?> springApplicationContextClass;
-
     private Server server;
-
     public JettyServer() {
     }
 
@@ -31,10 +29,8 @@ public class JettyServer {
 
     public void run() throws Exception {
         this.server = new Server(port);
-
         WebAppContext jettyWebContext = this.buildJettyWebContext();
         this.server.setHandler(jettyWebContext);
-
         this.server.setStopAtShutdown(true);
         this.server.start();
         this.server.join();
@@ -44,28 +40,20 @@ public class JettyServer {
         WebAppContext jettyWebContext = new WebAppContext();
         jettyWebContext.setContextPath(contextPath);
         jettyWebContext.getSessionHandler().setMaxInactiveInterval(30 * 60);// time session in seconds
-
         ClassPathResource classPathResource = new ClassPathResource(VIEWS_LOCATION);
         String resourceBasePath = classPathResource.getURI().toString();
         jettyWebContext.setResourceBase(resourceBasePath);
-
         // config spring web application context
         this.configSpring(jettyWebContext);
-
         return jettyWebContext;
     }
 
     private void configSpring(WebAppContext jettyWebContext) {
-        // creo el application context, basado en clase de configuracion
         AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
         applicationContext.register(this.springApplicationContextClass);
-
-        // crear dispatcher servlet de spring
         DispatcherServlet dispatcherServlet = new DispatcherServlet(applicationContext);
         ServletHolder dispatcherServletHolder = new ServletHolder(dispatcherServlet);
         jettyWebContext.addServlet(dispatcherServletHolder, "/");
-
-        // agregar el application context de spring a la aplicacion web
         ContextLoaderListener contextLoaderListener = new ContextLoaderListener(applicationContext);
         jettyWebContext.addEventListener(contextLoaderListener);
     }

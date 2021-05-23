@@ -1,8 +1,8 @@
 package com.otravo.trips.services;
 
-import com.otravo.trips.domain.AbmEntity;
+import com.otravo.trips.domain.CrudEntity;
 import com.otravo.trips.exceptions.DomainException;
-import com.otravo.trips.exceptions.ServiceException;
+import com.otravo.trips.exceptions.BusinessLogicException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,8 +15,8 @@ import java.util.Optional;
  * The objective of this class is to avoid repetitive code, and treat common operations in the same way.
  */
 @Slf4j
-public abstract class CrudServiceTemplate<T extends AbmEntity, ID> {
-    protected JpaRepository<T, ID> repository;
+public abstract class CrudServiceTemplate<T extends CrudEntity, ID> {
+    private JpaRepository<T, ID> repository;
 
     public CrudServiceTemplate(JpaRepository<T, ID> repository) {
         this.repository = repository;
@@ -38,7 +38,7 @@ public abstract class CrudServiceTemplate<T extends AbmEntity, ID> {
     }
 
 
-    public List<T> saveAll(List<T> entities) throws DomainException, ServiceException {
+    public List<T> saveAll(List<T> entities) throws DomainException, BusinessLogicException {
         List<T> entitiesBD = new ArrayList<>();
         for (T entity : entities) {
             T entityBD = this.create(entity);
@@ -51,9 +51,9 @@ public abstract class CrudServiceTemplate<T extends AbmEntity, ID> {
      * Method to create an entity
      * @param entityToCreate => is assumed without id, since it will autogenerate
      * @return Entity
-     * @throws ServiceException
+     * @throws BusinessLogicException
      **/
-    public T create(T entityToCreate) throws ServiceException, DomainException {
+    public T create(T entityToCreate) throws BusinessLogicException, DomainException {
         entityToCreate.throwErrorIfCreationIsNotOk();
         throwErrorIfExistInBD(entityToCreate);
         try {
@@ -63,17 +63,17 @@ public abstract class CrudServiceTemplate<T extends AbmEntity, ID> {
             String message = "Could not create entity {} ";
             log.error(message + ":" + e.getMessage(), entityToCreate);
             e.printStackTrace();
-            throw new ServiceException(message);
+            throw new BusinessLogicException(message);
         }
     }
 
     protected abstract Optional<T> findInBDBySystemId(T entity);
 
 
-    private void throwErrorIfExistInBD(T entityToFind) throws ServiceException {
+    private void throwErrorIfExistInBD(T entityToFind) throws BusinessLogicException {
         Optional<T> entity = findInBDBySystemId(entityToFind);
         if (entity.isPresent())
-            throw new ServiceException("Entity with id " + entityToFind.getSystemIdInStringFormat() + " already exists at the base");
+            throw new BusinessLogicException("Entity with id " + entityToFind.getSystemIdInStringFormat() + " already exists at the base");
     }
 
 
@@ -82,9 +82,9 @@ public abstract class CrudServiceTemplate<T extends AbmEntity, ID> {
      * The update can be a patch, or just update, depending on what we implement in the AbmEntity interface
      * @param entityDataToUpdate
      * @return
-     * @throws ServiceException
+     * @throws BusinessLogicException
      **/
-    public T update(T entityDataToUpdate) throws ServiceException, DomainException {
+    public T update(T entityDataToUpdate) throws BusinessLogicException, DomainException {
         entityDataToUpdate.throwErrorIfUpdatingIsNotOk();
         T entityBD = findEntityOrthrowExceptionIfNotExist(entityDataToUpdate);
         try {
@@ -92,14 +92,14 @@ public abstract class CrudServiceTemplate<T extends AbmEntity, ID> {
             entityBD = repository.save(entityBD);
             return entityBD;
         } catch (Exception e) {
-            throw new ServiceException("Could not update entity with id " + entityDataToUpdate.getSystemIdInStringFormat());
+            throw new BusinessLogicException("Could not update entity with id " + entityDataToUpdate.getSystemIdInStringFormat());
         }
     }
 
-    private T findEntityOrthrowExceptionIfNotExist(T entity) throws ServiceException {
+    private T findEntityOrthrowExceptionIfNotExist(T entity) throws BusinessLogicException {
         Optional<T> opEntity = findInBDBySystemId(entity);
         if (!opEntity.isPresent())
-            throw new ServiceException("Could not find entity with id " + entity.getSystemIdInStringFormat());
+            throw new BusinessLogicException("Could not find entity with id " + entity.getSystemIdInStringFormat());
         else return opEntity.get();
     }
 }

@@ -1,7 +1,6 @@
 package com.otravo.trips.domain;
 
 import com.otravo.trips.exceptions.DomainException;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +11,7 @@ import java.time.LocalDate;
 @Table(name = "passengers")
 @Data
 @NoArgsConstructor
-public class Passenger implements AbmEntity<Passenger> {
+public class Passenger implements CrudEntity<Passenger> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,6 +38,10 @@ public class Passenger implements AbmEntity<Passenger> {
         this.email = email;
         this.dateOfBirth = dateOfBirth;
         this.passport = passport;
+    }
+
+    public Passenger(String code) {
+        this.code = code;
     }
 
     @Override
