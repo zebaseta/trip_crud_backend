@@ -12,28 +12,28 @@ import org.junit.jupiter.api.Test;
 
     @Test
     void ifCodeIsNullThenCreationAirportNotOk() {
-        Airport Airport = new Airport(null, "Aeropuerto de Carrasco");
-        Assertions.assertThrows(DomainException.class, Airport::throwErrorIfCreationIsNotOk);
+        Airport airport = new Airport(null, "Aeropuerto de Carrasco");
+        Assertions.assertThrows(DomainException.class, airport::throwErrorIfCreationIsNotOk);
     }
 
     @Test
     void ifNameIsNulThenCreationAirportNotOk() {
-        Airport Airport = new Airport("A1", null);
-        Assertions.assertThrows(DomainException.class, Airport::throwErrorIfCreationIsNotOk);
+        Airport airport = new Airport("A1", null);
+        Assertions.assertThrows(DomainException.class, airport::throwErrorIfCreationIsNotOk);
     }
 
     @Test
     void ifAllParametersAreNullThenUpdatingAirportNotOk() {
-        Airport Airport = new Airport(null, null);
-        Assertions.assertThrows(DomainException.class, Airport::throwErrorIfUpdatingIsNotOk);
+        Airport airport = new Airport(null, null);
+        Assertions.assertThrows(DomainException.class, airport::throwErrorIfUpdatingIsNotOk);
     }
 
     @Test
     void ifOneParameterNotNullThenUpdatingAirportIsOk() {
-        Airport Airport1 = new Airport("A1", null);
-        Assertions.assertDoesNotThrow(Airport1::throwErrorIfUpdatingIsNotOk);
-        Airport Airport2 = new Airport(null, "Aeropuerto de Carrasco");
-        Assertions.assertDoesNotThrow(Airport2::throwErrorIfUpdatingIsNotOk);
+        Airport airport1 = new Airport("A1", null);
+        Assertions.assertDoesNotThrow(airport1::throwErrorIfUpdatingIsNotOk);
+        Airport airport2 = new Airport(null, "Aeropuerto de Carrasco");
+        Assertions.assertDoesNotThrow(airport2::throwErrorIfUpdatingIsNotOk);
     }
 
 

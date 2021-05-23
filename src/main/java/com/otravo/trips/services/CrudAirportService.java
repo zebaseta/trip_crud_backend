@@ -17,8 +17,8 @@ import java.util.Optional;
 @Slf4j
 @Service
 @Transactional
-public class CrudAiportService extends CrudServiceTemplate<Airport, Long> {
-    public CrudAiportService(AirportRepository airportRepository) {
+public class CrudAirportService extends CrudServiceTemplate<Airport, Long> {
+    public CrudAirportService(AirportRepository airportRepository) {
         super(airportRepository);
     }
 

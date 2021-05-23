@@ -21,7 +21,7 @@ public class CrudAirportServiceTest {
     private AirportRepository repository;
 
     @InjectMocks
-    private CrudAiportService crudService;
+    private CrudAirportService crudService;
 
     private List<Airport> airports;
     private Airport airport1 = new Airport("A1", "airport1");

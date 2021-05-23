@@ -21,28 +21,28 @@ public class AirportControllerTest {
     @Mock
     public CrudServiceTemplate<Airport, Long> abmService;
     @InjectMocks
-    public AirportController aiportController;
+    public AirportController airportController;
 
-    private List<Airport> aiports;
-    private Airport aiport1 = new Airport("A1", "aiport1");
-    private Airport aiport2 = new Airport("A2", "aiport2");
-    private Airport aiport3 = new Airport("A3", "aiport3");
-    private Airport aiport4 = new Airport("A4", "aiport4");
-    private Airport aiport5 = new Airport("A5", "aiport5");
-    private Airport aiportBdCreated;
-    private Airport aiportBdUpdated;
-    private String nameChanged = "aiport name changed";
+    private List<Airport> airports;
+    private Airport airport1 = new Airport("A1", "airport1");
+    private Airport airport2 = new Airport("A2", "airport2");
+    private Airport airport3 = new Airport("A3", "airport3");
+    private Airport airport4 = new Airport("A4", "airport4");
+    private Airport airport5 = new Airport("A5", "airport5");
+    private Airport airportBdCreated;
+    private Airport airportBdUpdated;
+    private String nameChanged = "airport name changed";
 
 
     @BeforeEach
     public void init() {
-        aiports = Arrays.asList(aiport1, aiport2, aiport3, aiport4, aiport5);
-        Mockito.when(abmService.findAll()).thenReturn(aiports);
+        airports = Arrays.asList(airport1, airport2, airport3, airport4, airport5);
+        Mockito.when(abmService.findAll()).thenReturn(airports);
     }
 
     @Test
     void findAllOk() {
-        List<AirportModel> aiports = aiportController.findAll();
-        Assertions.assertEquals(5, aiports.size());
+        List<AirportModel> airports = airportController.findAll();
+        Assertions.assertEquals(5, airports.size());
     }
 }
