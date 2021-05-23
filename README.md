@@ -1,1 +1,0 @@
-# trip_crud_backend
