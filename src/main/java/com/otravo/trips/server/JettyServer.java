@@ -42,13 +42,9 @@ public class JettyServer {
 
     private WebAppContext buildJettyWebContext() throws Exception {
         WebAppContext jettyWebContext = new WebAppContext();
-        // seteo del context path / path url escucha
         jettyWebContext.setContextPath(contextPath);
+        jettyWebContext.getSessionHandler().setMaxInactiveInterval(30 * 60);// time session in seconds
 
-        // configuracion de tiempo de session
-        jettyWebContext.getSessionHandler().setMaxInactiveInterval(30 * 60); //Es en segundos
-
-        // config web resources para viewa/html - thymeleaf
         ClassPathResource classPathResource = new ClassPathResource(VIEWS_LOCATION);
         String resourceBasePath = classPathResource.getURI().toString();
         jettyWebContext.setResourceBase(resourceBasePath);
