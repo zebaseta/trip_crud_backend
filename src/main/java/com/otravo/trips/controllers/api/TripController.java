@@ -26,7 +26,7 @@ public class TripController {
   @GetMapping()
   public List<TripModel> findAll(@RequestHeader("authorization") String token) {
     try {
-      jwtService.verifyToken(token);
+      jwtService.verifyTokenAndGetUser(token);
       List<Trip> trips = crudService.findAll();
       return trips.stream().map(TripModel::buildFromEntity).collect(Collectors.toList());
     } catch (BusinessLogicException e) {
@@ -39,7 +39,7 @@ public class TripController {
   public TripModel create(
       @RequestHeader("authorization") String token, @RequestBody TripModel model) {
     try {
-      jwtService.verifyToken(token);
+      jwtService.verifyTokenAndGetUser(token);
       Trip resultBD = crudService.create(model.toEntity());
       return TripModel.buildFromEntity(resultBD);
     } catch (DomainException e) {

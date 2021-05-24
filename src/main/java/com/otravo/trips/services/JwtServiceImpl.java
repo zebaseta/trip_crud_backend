@@ -39,12 +39,13 @@ public class JwtServiceImpl implements JwtService {
   }
 
   @Override
-  public void verifyToken(String token) throws BusinessLogicException {
+  public String verifyTokenAndGetUser(String token) throws BusinessLogicException {
     try {
       Algorithm algorithm = Algorithm.HMAC256(privateKeyId);
       JWTVerifier verifier =
           JWT.require(algorithm).withIssuer("auth0").build(); // Reusable verifier instance
       DecodedJWT jwt = verifier.verify(token);
+      return jwt.getClaim("user").asString();
     } catch (JWTVerificationException exception) {
       throw new BusinessLogicException("Token is not valid");
     }

@@ -28,7 +28,7 @@ public class AirportController {
     @GetMapping()
     public List<AirportModel> findAll(@RequestHeader("authorization") String token) {
         try {
-            jwtService.verifyToken(token);
+            jwtService.verifyTokenAndGetUser(token);
             List<Airport> aiports = crudService.findAll();
             return aiports.stream().map(AirportModel::buildFromEntity).collect(Collectors.toList());
         } catch (BusinessLogicException e) {
@@ -40,7 +40,7 @@ public class AirportController {
     @PostMapping()
     public AirportModel create(@RequestHeader("authorization") String token, @RequestBody AirportModel model) {
         try {
-            jwtService.verifyToken(token);
+            jwtService.verifyTokenAndGetUser(token);
             Airport resultBD = crudService.create(model.toEntity());
             return AirportModel.buildFromEntity(resultBD);
         } catch (DomainException e) {

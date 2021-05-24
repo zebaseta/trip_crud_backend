@@ -33,7 +33,7 @@ public class PassengerController {
     @GetMapping()
     public List<PassengerModel> findAll(@RequestHeader("authorization") String token) {
         try {
-            jwtService.verifyToken(token);
+            jwtService.verifyTokenAndGetUser(token);
             List<Passenger> passengers = crudService.findAll();
             return passengers.stream().map(PassengerModel::buildFromEntity).collect(Collectors.toList());
         } catch (BusinessLogicException e) {
@@ -45,7 +45,7 @@ public class PassengerController {
     @PostMapping()
     public PassengerModel create(@RequestHeader("authorization") String token, @RequestBody PassengerModel model) {
         try {
-            jwtService.verifyToken(token);
+            jwtService.verifyTokenAndGetUser(token);
             Passenger resultBD = crudService.create(model.toEntity(pattern));
             return PassengerModel.buildFromEntity(resultBD);
         } catch (DateTimeParseException e) {
