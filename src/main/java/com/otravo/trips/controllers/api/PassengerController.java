@@ -5,6 +5,7 @@ import com.otravo.trips.domain.Passenger;
 import com.otravo.trips.exceptions.DomainException;
 import com.otravo.trips.exceptions.BusinessLogicException;
 import com.otravo.trips.services.CrudServiceTemplate;
+import com.otravo.trips.services.JwtService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,15 +27,25 @@ public class PassengerController {
     @Value("${passenger.birth.pattern}")
     private String pattern;
 
+    @Autowired
+    private JwtService jwtService;
+
     @GetMapping()
-    public List<PassengerModel> findAll() {
-        List<Passenger> passengers = crudService.findAll();
-        return passengers.stream().map(PassengerModel::buildFromEntity).collect(Collectors.toList());
+    public List<PassengerModel> findAll(@RequestHeader("authorization") String token) {
+        try {
+            jwtService.verifyToken(token);
+            List<Passenger> passengers = crudService.findAll();
+            return passengers.stream().map(PassengerModel::buildFromEntity).collect(Collectors.toList());
+        } catch (BusinessLogicException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There was a problem: " + e.getMessage());
+        }
+
     }
 
     @PostMapping()
-    public PassengerModel create(@RequestBody PassengerModel model) {
+    public PassengerModel create(@RequestHeader("authorization") String token, @RequestBody PassengerModel model) {
         try {
+            jwtService.verifyToken(token);
             Passenger resultBD = crudService.create(model.toEntity(pattern));
             return PassengerModel.buildFromEntity(resultBD);
         } catch (DateTimeParseException e) {

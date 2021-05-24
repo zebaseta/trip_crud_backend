@@ -5,6 +5,7 @@ import com.otravo.trips.domain.Airline;
 import com.otravo.trips.exceptions.DomainException;
 import com.otravo.trips.exceptions.BusinessLogicException;
 import com.otravo.trips.services.CrudServiceTemplate;
+import com.otravo.trips.services.JwtService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,15 +22,25 @@ public class AirlineController {
     @Autowired
     private CrudServiceTemplate<Airline, Long> crudService;
 
+    @Autowired
+    private JwtService jwtService;
+
     @GetMapping()
-    public List<AirlineModel> findAll() {
-        List<Airline> airlines = crudService.findAll();
-        return airlines.stream().map(AirlineModel::buildFromEntity).collect(Collectors.toList());
+    public List<AirlineModel> findAll(@RequestHeader("authorization") String token) {
+        try {
+            jwtService.verifyToken(token);
+            List<Airline> airlines = crudService.findAll();
+            return airlines.stream().map(AirlineModel::buildFromEntity).collect(Collectors.toList());
+        } catch (BusinessLogicException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There was a problem: " + e.getMessage());
+        }
+
     }
 
     @PostMapping()
-    public AirlineModel create(@RequestBody AirlineModel model) {
+    public AirlineModel create(@RequestHeader("authorization") String token, @RequestBody AirlineModel model) {
         try {
+            jwtService.verifyToken(token);
             Airline resultBD = crudService.create(model.toEntity());
             return AirlineModel.buildFromEntity(resultBD);
         } catch (DomainException e) {

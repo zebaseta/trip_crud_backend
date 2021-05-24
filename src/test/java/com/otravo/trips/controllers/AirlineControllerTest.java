@@ -41,7 +41,7 @@ public class AirlineControllerTest {
 
     @Test
     void findAllOk() {
-        List<AirlineModel> airlines = airlineController.findAll();
+        List<AirlineModel> airlines = airlineController.findAll(null);
         Assertions.assertEquals(5, airlines.size());
     }
 }
