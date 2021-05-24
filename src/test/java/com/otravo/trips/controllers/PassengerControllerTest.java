@@ -44,7 +44,7 @@ public class PassengerControllerTest {
 
     @Test
     void findAllOk() {
-        List<PassengerModel> passengers = passengerController.findAll();
+        List<PassengerModel> passengers = passengerController.findAll(null);
         Assertions.assertEquals(5, passengers.size());
     }
 }

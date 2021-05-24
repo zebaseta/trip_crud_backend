@@ -42,7 +42,7 @@ public class AirportControllerTest {
 
     @Test
     void findAllOk() {
-        List<AirportModel> airports = airportController.findAll();
+        List<AirportModel> airports = airportController.findAll(null);
         Assertions.assertEquals(5, airports.size());
     }
 }
