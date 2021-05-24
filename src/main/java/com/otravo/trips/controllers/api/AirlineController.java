@@ -32,10 +32,11 @@ public class AirlineController {
         try {
             ThreadContext.push("TRANSACTION-ID",UUID.randomUUID().toString());
             String user = jwtService.verifyTokenAndGetUser(token);
-            log.info("Arrive petition find all from user "+user);
+            log.info("Arrive petition find all airlines from user "+user);
             List<Airline> airlines = crudService.findAll();
             return airlines.stream().map(AirlineModel::buildFromEntity).collect(Collectors.toList());
         } catch (BusinessLogicException e) {
+            log.error(e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There was a problem: " + e.getMessage());
         }
 
@@ -46,14 +47,17 @@ public class AirlineController {
         try {
             ThreadContext.push("TRANSACTION-ID",UUID.randomUUID().toString());
             String user = jwtService.verifyTokenAndGetUser(token);
-            log.info("Arrive petition create airline from user "+user);
+            log.info("Arrive petition create airline from user "+user+" with data "+model.toString());
             Airline resultBD = crudService.create(model.toEntity());
             return AirlineModel.buildFromEntity(resultBD);
         } catch (DomainException e) {
+            log.error(e.getMessage(),e);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The entity is not ok: " + e.getMessage());
         } catch (BusinessLogicException e) {
+            log.error(e.getMessage(),e);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There was a problem creating the entity: " + e.getMessage());
         } catch (Exception e) {
+            log.error(e.getMessage(),e);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There was a problem creating the entity");
         }
     }

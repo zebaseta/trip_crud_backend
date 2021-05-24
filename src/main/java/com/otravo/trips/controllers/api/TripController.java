@@ -7,12 +7,14 @@ import com.otravo.trips.exceptions.DomainException;
 import com.otravo.trips.services.CrudServiceTemplate;
 import com.otravo.trips.services.JwtService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.ThreadContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -26,10 +28,13 @@ public class TripController {
   @GetMapping()
   public List<TripModel> findAll(@RequestHeader("authorization") String token) {
     try {
-      jwtService.verifyTokenAndGetUser(token);
+      ThreadContext.push("TRANSACTION-ID", UUID.randomUUID().toString());
+      String user = jwtService.verifyTokenAndGetUser(token);
+      log.info("Arrive petition find all trips from user " + user);
       List<Trip> trips = crudService.findAll();
       return trips.stream().map(TripModel::buildFromEntity).collect(Collectors.toList());
     } catch (BusinessLogicException e) {
+      log.error(e.getMessage(), e);
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "There was a problem: " + e.getMessage());
     }
@@ -39,16 +44,21 @@ public class TripController {
   public TripModel create(
       @RequestHeader("authorization") String token, @RequestBody TripModel model) {
     try {
-      jwtService.verifyTokenAndGetUser(token);
+      ThreadContext.push("TRANSACTION-ID", UUID.randomUUID().toString());
+      String user = jwtService.verifyTokenAndGetUser(token + " with data " + model.toString());
+      log.info("Arrive petition create trip from user " + user);
       Trip resultBD = crudService.create(model.toEntity());
       return TripModel.buildFromEntity(resultBD);
     } catch (DomainException e) {
+      log.error(e.getMessage(), e);
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "The entity is not ok: " + e.getMessage());
     } catch (BusinessLogicException e) {
+      log.error(e.getMessage(), e);
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "There was a problem creating the entity: " + e.getMessage());
     } catch (Exception e) {
+      log.error(e.getMessage(), e);
       throw new ResponseStatusException(
           HttpStatus.BAD_REQUEST, "There was a problem creating the entity");
     }
