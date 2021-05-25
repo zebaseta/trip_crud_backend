@@ -33,6 +33,9 @@ public class CrudTripService extends CrudServiceTemplate<Trip, Long> {
   @Autowired
   private CrudServiceTemplate<Itinerary,Long> itineraryService;
 
+  @Autowired
+  private RulesTripValidator rulesTripValidator;
+
   private TripRepository tripRepository;
 
   public CrudTripService(TripRepository tripRepository) {
@@ -51,6 +54,7 @@ public class CrudTripService extends CrudServiceTemplate<Trip, Long> {
     trip.setReturnFlight(returnFligthBD);
     Itinerary itineraryBD = itineraryService.create(trip.getItinerary());
     trip.setItinerary(itineraryBD);
+    rulesTripValidator.validateTripOrThrowException(trip);
     return super.create(trip);
   }
 

@@ -53,6 +53,15 @@ public class Itinerary implements CrudEntity<Itinerary> {
   }
 
   @Override
+  public String toString() {
+    return "Itinerary{" +
+            "id=" + id +
+            ", outboundFlight=" + outboundFlight.getAirline() +
+            ", returnFlight=" + returnFlight.getCode() +
+            '}';
+  }
+
+  @Override
   public String getSystemIdInStringFormat() {
     return getId().toString();
   }

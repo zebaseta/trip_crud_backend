@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "passengers")
@@ -30,6 +31,9 @@ public class Passenger implements CrudEntity<Passenger> {
 
     @Column(nullable = false, unique = true)
     private String passport;
+
+    @OneToMany(mappedBy = "passenger")
+    private List<Trip> trips;
 
 
     public Passenger(String code, String name, String email, LocalDate dateOfBirth, String passport) {

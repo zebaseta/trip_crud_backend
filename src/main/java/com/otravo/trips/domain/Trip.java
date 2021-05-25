@@ -49,6 +49,15 @@ public class Trip implements CrudEntity<Trip> {
   }
 
   @Override
+  public String toString() {
+    return "Trip{" +
+            "id=" + id +
+            ", passenger=" + passenger +
+            ", itinerary=" + itinerary +
+            '}';
+  }
+
+  @Override
   public String getSystemIdInStringFormat() {
     return getId().toString();
   }

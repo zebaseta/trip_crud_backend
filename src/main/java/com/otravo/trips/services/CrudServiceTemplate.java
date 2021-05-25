@@ -56,9 +56,10 @@ public abstract class CrudServiceTemplate<T extends CrudEntity, ID> {
     public T create(T entityToCreate) throws BusinessLogicException, DomainException {
         entityToCreate.throwErrorIfCreationIsNotOk();
         throwErrorIfExistInBD(entityToCreate);
+
         try {
             T entityBD = repository.saveAndFlush(entityToCreate);
-            log.info("Entity with id "+entityBD.getSystemIdInStringFormat()+" was created sucessfully");
+            log.info("Entity "+entityToCreate.getClass().getSimpleName()+" with id {} was created successfully ", entityBD.getSystemIdInStringFormat());
             return entityBD;
         } catch (Exception e) {
             String message = "Could not create entity {} ";

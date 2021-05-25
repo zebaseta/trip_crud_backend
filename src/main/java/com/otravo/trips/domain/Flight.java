@@ -37,7 +37,7 @@ public class Flight implements CrudEntity<Flight> {
   private Airport destinationAirport;
 
   @ManyToOne
-  @JoinColumn(nullable = false, unique = true)
+  @JoinColumn(nullable = false)
   private Airline airline;
 
   public Flight(
