@@ -5,7 +5,6 @@ import com.otravo.trips.exceptions.BusinessLogicException;
 import com.otravo.trips.exceptions.DomainException;
 import com.otravo.trips.repositories.TripRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;

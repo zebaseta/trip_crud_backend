@@ -6,7 +6,6 @@ import com.otravo.trips.exceptions.DomainException;
 import com.otravo.trips.exceptions.BusinessLogicException;
 import com.otravo.trips.repositories.AirlineRepository;
 import com.otravo.trips.repositories.AirportRepository;
-import jnr.posix.AixLibC;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
