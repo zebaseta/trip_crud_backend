@@ -8,6 +8,7 @@ import com.otravo.trips.services.CrudServiceTemplate;
 import com.otravo.trips.services.JwtService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.ThreadContext;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,8 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static com.otravo.trips.constans.LogConstants.TRANSACTION_ID_IDENTIFICATION;
 
 @Slf4j
 @RestController
@@ -35,7 +38,7 @@ public class PassengerController {
     @GetMapping()
     public List<PassengerModel> findAll(@RequestHeader("authorization") String token) {
         try {
-            ThreadContext.push("TRANSACTION-ID", UUID.randomUUID().toString());
+            MDC.put("TRANSACTION-ID",TRANSACTION_ID_IDENTIFICATION+UUID.randomUUID().toString());
             String user = jwtService.verifyTokenAndGetUser(token);
             log.info("Arrive petition find alla passengers from user "+user);
             List<Passenger> passengers = crudService.findAll();
@@ -50,7 +53,7 @@ public class PassengerController {
     @PostMapping()
     public PassengerModel create(@RequestHeader("authorization") String token, @RequestBody PassengerModel model) {
         try {
-            ThreadContext.push("TRANSACTION-ID",UUID.randomUUID().toString());
+            MDC.put("TRANSACTION-ID",TRANSACTION_ID_IDENTIFICATION+UUID.randomUUID().toString());
             String user = jwtService.verifyTokenAndGetUser(token);
             log.info("Arrive petition create passagenger from user "+user+" with data "+model.toString());
             Passenger resultBD = crudService.create(model.toEntity(pattern));

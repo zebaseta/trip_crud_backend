@@ -8,6 +8,7 @@ import com.otravo.trips.services.CrudServiceTemplate;
 import com.otravo.trips.services.JwtService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.ThreadContext;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static com.otravo.trips.constans.LogConstants.TRANSACTION_ID_IDENTIFICATION;
 
 @Slf4j
 @RestController
@@ -30,7 +33,7 @@ public class AirlineController {
     @GetMapping()
     public List<AirlineModel> findAll(@RequestHeader("authorization") String token) {
         try {
-            ThreadContext.push("TRANSACTION-ID",UUID.randomUUID().toString());
+            MDC.put("TRANSACTION-ID",TRANSACTION_ID_IDENTIFICATION+UUID.randomUUID().toString());
             String user = jwtService.verifyTokenAndGetUser(token);
             log.info("Arrive petition find all airlines from user "+user);
             List<Airline> airlines = crudService.findAll();
@@ -45,7 +48,7 @@ public class AirlineController {
     @PostMapping()
     public AirlineModel create(@RequestHeader("authorization") String token, @RequestBody AirlineModel model) {
         try {
-            ThreadContext.push("TRANSACTION-ID",UUID.randomUUID().toString());
+            MDC.put("TRANSACTION-ID",TRANSACTION_ID_IDENTIFICATION+UUID.randomUUID().toString());
             String user = jwtService.verifyTokenAndGetUser(token);
             log.info("Arrive petition create airline from user "+user+" with data "+model.toString());
             Airline resultBD = crudService.create(model.toEntity());

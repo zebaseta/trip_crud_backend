@@ -75,9 +75,14 @@
             <version>3.16.0</version>
         </dependency>
         <dependency>
-            <groupId>io.sentry</groupId>
-            <artifactId>sentry-log4j2</artifactId>
-            <version>1.7.30</version>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
         </dependency>
     </dependencies>
 
