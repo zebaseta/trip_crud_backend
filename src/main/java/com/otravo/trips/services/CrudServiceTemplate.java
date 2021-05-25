@@ -58,7 +58,7 @@ public abstract class CrudServiceTemplate<T extends CrudEntity, ID> {
         throwErrorIfExistInBD(entityToCreate);
 
         try {
-            T entityBD = repository.saveAndFlush(entityToCreate);
+            T entityBD = repository.save(entityToCreate);
             log.info("Entity "+entityToCreate.getClass().getSimpleName()+" with id {} was created successfully ", entityBD.getSystemIdInStringFormat());
             return entityBD;
         } catch (Exception e) {
@@ -91,7 +91,7 @@ public abstract class CrudServiceTemplate<T extends CrudEntity, ID> {
         T entityBD = findEntityOrthrowExceptionIfNotExist(entityDataToUpdate);
         try {
             entityBD.updateFromEntity(entityDataToUpdate);
-            entityBD = repository.save(entityBD);
+            entityBD = repository.saveAndFlush(entityBD);
             return entityBD;
         } catch (Exception e) {
             throw new BusinessLogicException("Could not update entity "+entityDataToUpdate.getClass().getSimpleName()+" with id " + entityDataToUpdate.getSystemIdInStringFormat());

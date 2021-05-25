@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-@Transactional
+@Transactional(rollbackFor = {Exception.class, RuntimeException.class})
 public class CrudTripService extends CrudServiceTemplate<Trip, Long> {
 
   @Autowired
@@ -44,6 +44,7 @@ public class CrudTripService extends CrudServiceTemplate<Trip, Long> {
   }
 
   @Override
+
   public Trip create(Trip trip) throws BusinessLogicException, DomainException {
     addPassengerFromBdOrThrowExceptionIfNotExist(trip);
     addAirlinesFromBDOrThrowExceptionIfNotExits(trip);
