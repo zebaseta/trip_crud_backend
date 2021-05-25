@@ -12,6 +12,7 @@ import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -36,40 +37,44 @@ public class PassengerController {
     private JwtService jwtService;
 
     @GetMapping()
-    public List<PassengerModel> findAll(@RequestHeader("authorization") String token) {
+    public ResponseEntity<Object> findAll(@RequestHeader("authorization") String token) {
         try {
             MDC.put("TRANSACTION-ID",TRANSACTION_ID_IDENTIFICATION+UUID.randomUUID().toString());
             String user = jwtService.verifyTokenAndGetUser(token);
             log.info("Arrive petition find alla passengers from user "+user);
             List<Passenger> passengers = crudService.findAll();
-            return passengers.stream().map(PassengerModel::buildFromEntity).collect(Collectors.toList());
+            return ResponseEntity.ok().body(passengers.stream().map(PassengerModel::buildFromEntity).collect(Collectors.toList()));
         } catch (BusinessLogicException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body("There was a problem: " + e.getMessage());
+        }
+        catch (Exception e){
             log.error(e.getMessage(),e);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There was a problem: " + e.getMessage());
+            return ResponseEntity.badRequest().body("There was a problem: " + e.getMessage());
         }
 
     }
 
     @PostMapping()
-    public PassengerModel create(@RequestHeader("authorization") String token, @RequestBody PassengerModel model) {
+    public ResponseEntity<Object> create(@RequestHeader("authorization") String token, @RequestBody PassengerModel model) {
         try {
             MDC.put("TRANSACTION-ID",TRANSACTION_ID_IDENTIFICATION+UUID.randomUUID().toString());
             String user = jwtService.verifyTokenAndGetUser(token);
             log.info("Arrive petition create passagenger from user "+user+" with data "+model.toString());
             Passenger resultBD = crudService.create(model.toEntity(pattern));
-            return PassengerModel.buildFromEntity(resultBD);
+            return ResponseEntity.ok().body(PassengerModel.buildFromEntity(resultBD));
         } catch (DateTimeParseException e) {
             log.error(e.getMessage(),e);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The date format is not ok, it must be "+pattern);
         } catch (DomainException e) {
-            log.error(e.getMessage(),e);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The entity is not ok: " + e.getMessage());
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body("The entity is not ok: " + e.getMessage());
         } catch (BusinessLogicException e) {
-            log.error(e.getMessage(),e);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There was a problem creating the entity: " + e.getMessage());
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body("There was a problem creating the entity: " + e.getMessage());
         } catch (Exception e) {
-            log.error(e.getMessage(),e);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There was a problem creating the entity");
+            log.error(e.getMessage(), e);
+            return ResponseEntity.badRequest().body("There was a problem creating the entity");
         }
     }
 

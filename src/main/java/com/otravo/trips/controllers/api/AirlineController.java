@@ -1,6 +1,7 @@
 package com.otravo.trips.controllers.api;
 
 import com.otravo.trips.controllers.models.AirlineModel;
+import com.otravo.trips.controllers.models.AirportModel;
 import com.otravo.trips.domain.Airline;
 import com.otravo.trips.exceptions.DomainException;
 import com.otravo.trips.exceptions.BusinessLogicException;
@@ -11,6 +12,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -31,37 +33,41 @@ public class AirlineController {
     private JwtService jwtService;
 
     @GetMapping()
-    public List<AirlineModel> findAll(@RequestHeader("authorization") String token) {
+    public ResponseEntity<Object> findAll(@RequestHeader("authorization") String token) {
         try {
             MDC.put("TRANSACTION-ID",TRANSACTION_ID_IDENTIFICATION+UUID.randomUUID().toString());
             String user = jwtService.verifyTokenAndGetUser(token);
             log.info("Arrive petition find all airlines from user "+user);
             List<Airline> airlines = crudService.findAll();
-            return airlines.stream().map(AirlineModel::buildFromEntity).collect(Collectors.toList());
+            return ResponseEntity.ok().body(airlines.stream().map(AirlineModel::buildFromEntity).collect(Collectors.toList()));
         } catch (BusinessLogicException e) {
             log.error(e.getMessage());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There was a problem: " + e.getMessage());
+            return ResponseEntity.badRequest().body("There was a problem: " + e.getMessage());
+        }
+        catch (Exception e){
+            log.error(e.getMessage(),e);
+            return ResponseEntity.badRequest().body("There was a problem: " + e.getMessage());
         }
 
     }
 
     @PostMapping()
-    public AirlineModel create(@RequestHeader("authorization") String token, @RequestBody AirlineModel model) {
+    public ResponseEntity<Object> create(@RequestHeader("authorization") String token, @RequestBody AirlineModel model) {
         try {
             MDC.put("TRANSACTION-ID",TRANSACTION_ID_IDENTIFICATION+UUID.randomUUID().toString());
             String user = jwtService.verifyTokenAndGetUser(token);
             log.info("Arrive petition create airline from user "+user+" with data "+model.toString());
             Airline resultBD = crudService.create(model.toEntity());
-            return AirlineModel.buildFromEntity(resultBD);
+            return ResponseEntity.ok().body(AirlineModel.buildFromEntity(resultBD));
         } catch (DomainException e) {
-            log.error(e.getMessage(),e);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The entity is not ok: " + e.getMessage());
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body("The entity is not ok: " + e.getMessage());
         } catch (BusinessLogicException e) {
-            log.error(e.getMessage(),e);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There was a problem creating the entity: " + e.getMessage());
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body("There was a problem creating the entity: " + e.getMessage());
         } catch (Exception e) {
-            log.error(e.getMessage(),e);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There was a problem creating the entity");
+            log.error(e.getMessage(), e);
+            return ResponseEntity.badRequest().body("There was a problem creating the entity");
         }
     }
 

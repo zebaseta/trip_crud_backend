@@ -12,6 +12,7 @@ import org.apache.logging.log4j.ThreadContext;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -28,17 +29,20 @@ public class LoginController {
     @Autowired
     private JwtService jwtService;
 
-
     @PostMapping()
-    public String login(@RequestBody LoginModel model) {
+    public ResponseEntity<Object> login(@RequestBody LoginModel model) {
         try {
             MDC.put("TRANSACTION-ID",TRANSACTION_ID_IDENTIFICATION+UUID.randomUUID().toString());
             boolean isUserOk =  model.getUser()!=null && model.getUser().equals("admin") && model.getPass()!= null && model.getPass().equals("pass1234");
             if(!isUserOk) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User and pass are not ok");
-            return jwtService.createToken(model.getUser(),model.getPass());
+            return ResponseEntity.ok().body(jwtService.createToken(model.getUser(),model.getPass()));
         } catch (BusinessLogicException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body("There was a problem: " + e.getMessage());
+        }
+        catch (Exception e){
             log.error(e.getMessage(),e);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            return ResponseEntity.badRequest().body("There was a problem: " + e.getMessage());
         }
     }
 
