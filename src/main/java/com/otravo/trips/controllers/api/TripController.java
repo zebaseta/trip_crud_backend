@@ -35,18 +35,20 @@ public class TripController {
     private JwtService jwtService;
 
     @GetMapping()
-    public @ResponseBody
-     List<TripModel> findAll(@RequestHeader("authorization") String token) {
+    public ResponseEntity<Object> findAll(@RequestHeader("authorization") String token) {
         try {
             MDC.put("TRANSACTION-ID", TRANSACTION_ID_IDENTIFICATION + UUID.randomUUID().toString());
             String user = jwtService.verifyTokenAndGetUser(token);
             log.info("Arrive petition find all trips from user " + user);
             List<Trip> trips = crudService.findAll();
-            return trips.stream().map(TripModel::buildFromEntity).collect(Collectors.toList());
+            return ResponseEntity.ok().body(trips.stream().map(TripModel::buildFromEntity).collect(Collectors.toList()));
         } catch (BusinessLogicException e) {
-            log.error(e.getMessage(), e);
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "There was a problem: " + e.getMessage());
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body("There was a problem: " + e.getMessage());
+        }
+        catch (Exception e){
+            log.error(e.getMessage(),e);
+            return ResponseEntity.badRequest().body("There was a problem: " + e.getMessage());
         }
     }
 
@@ -61,10 +63,10 @@ public class TripController {
             TripModel result = TripModel.buildFromEntity(resultBD);
             return ResponseEntity.ok().body(result);
         } catch (DomainException e) {
-            log.error(e.getMessage(), e);
+            log.error(e.getMessage());
             return ResponseEntity.badRequest().body("The entity is not ok: " + e.getMessage());
         } catch (BusinessLogicException e) {
-            log.error(e.getMessage(), e);
+            log.error(e.getMessage());
             return ResponseEntity.badRequest().body("There was a problem creating the entity: " + e.getMessage());
         } catch (Exception e) {
             log.error(e.getMessage(), e);

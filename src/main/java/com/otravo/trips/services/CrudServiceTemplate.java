@@ -75,7 +75,7 @@ public abstract class CrudServiceTemplate<T extends CrudEntity, ID> {
     private void throwErrorIfExistInBD(T entityToFind) throws BusinessLogicException {
         Optional<T> entity = findInBDBySystemId(entityToFind);
         if (entity.isPresent())
-            throw new BusinessLogicException("Entity with id " + entityToFind.getSystemIdInStringFormat() + " already exists at the base");
+            throw new BusinessLogicException("Entity "+entityToFind.getClass().getSimpleName()+" with id " + entityToFind.getSystemIdInStringFormat() + " already exists at the base");
     }
 
 
@@ -94,14 +94,14 @@ public abstract class CrudServiceTemplate<T extends CrudEntity, ID> {
             entityBD = repository.save(entityBD);
             return entityBD;
         } catch (Exception e) {
-            throw new BusinessLogicException("Could not update entity with id " + entityDataToUpdate.getSystemIdInStringFormat());
+            throw new BusinessLogicException("Could not update entity "+entityDataToUpdate.getClass().getSimpleName()+" with id " + entityDataToUpdate.getSystemIdInStringFormat());
         }
     }
 
     private T findEntityOrthrowExceptionIfNotExist(T entity) throws BusinessLogicException {
         Optional<T> opEntity = findInBDBySystemId(entity);
         if (!opEntity.isPresent())
-            throw new BusinessLogicException("Could not find entity with id " + entity.getSystemIdInStringFormat());
+            throw new BusinessLogicException("Could not find entity "+entity.getClass().getSimpleName()+" with id " + entity.getSystemIdInStringFormat());
         else return opEntity.get();
     }
 }
