@@ -30,7 +30,11 @@ public class Trip implements CrudEntity<Trip> {
     this.itinerary = itinerary;
   }
 
-  @Override
+  public Trip(Passenger passenger) {
+    this.passenger = passenger;
+  }
+
+    @Override
   public void throwErrorIfCreationIsNotOk() throws DomainException {
     if (itinerary == null) throw new DomainException("Passenger cannot be null");
     if (passenger == null) throw new DomainException("Itinerary cannot be null");

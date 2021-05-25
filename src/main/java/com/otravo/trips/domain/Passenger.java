@@ -48,6 +48,11 @@ public class Passenger implements CrudEntity<Passenger> {
         this.code = code;
     }
 
+    public Passenger(String email, String passport) {
+        this.email = email;
+        this.passport = passport;
+    }
+
     @Override
     public void throwErrorIfCreationIsNotOk() throws DomainException {
         if (code == null) throw new DomainException("Code cannot be null");
@@ -59,7 +64,7 @@ public class Passenger implements CrudEntity<Passenger> {
 
     @Override
     public void throwErrorIfUpdatingIsNotOk() throws DomainException {
-        if (code == null && name == null && email==null && dateOfBirth==null && passport==null)
+        if (code == null && name == null && email == null && dateOfBirth == null && passport == null)
             throw new DomainException("No attributes were modified");
     }
 
@@ -69,7 +74,7 @@ public class Passenger implements CrudEntity<Passenger> {
         if (newData.getName() != null) name = newData.getName();
         if (newData.getEmail() != null) email = newData.getEmail();
         if (newData.getDateOfBirth() != null) dateOfBirth = newData.getDateOfBirth();
-        if (newData.getPassport() != null)  passport = newData.getPassport();
+        if (newData.getPassport() != null) passport = newData.getPassport();
     }
 
     @Override

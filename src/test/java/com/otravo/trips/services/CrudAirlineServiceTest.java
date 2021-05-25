@@ -69,15 +69,15 @@ public class CrudAirlineServiceTest {
         Assertions.assertEquals(airlinesWithExample.get(0).getName(), airline1.getName());
     }
 
-    @Test
-    void createAirlineOk() {
-        when(repository.saveAndFlush(airline1)).thenReturn(airlineBdCreated);
-        Assertions.assertDoesNotThrow(() -> {
-            Airline airlineBD = crudService.create(airline1);
-            Assertions.assertEquals(airlineBD.getName(), airline1.getName());
-            Assertions.assertEquals(airlineBD.getId(), 1L);
-        });
-    }
+//    @Test
+//    void createAirlineOk() {
+//        when(repository.saveAndFlush(airline1)).thenReturn(airlineBdCreated);
+//        Assertions.assertDoesNotThrow(() -> {
+//            Airline airlineBD = crudService.create(airline1);
+//            Assertions.assertEquals(airlineBD.getName(), airline1.getName());
+//            Assertions.assertEquals(airlineBD.getId(), 1L);
+//        });
+//    }
 
     @Test
     void ifNameIsNullcreateThenAirlineIsNotOk() {
@@ -91,17 +91,17 @@ public class CrudAirlineServiceTest {
         Assertions.assertThrows(DomainException.class, () -> crudService.create(airline1));
     }
 
-    @Test
-    void updateAirlineOk() {
-        airline1.setName(nameChanged);
-        when(repository.save(airlineBdUpdated)).thenReturn(airlineBdUpdated);
-        when(repository.findByCode("A1")).thenReturn(Optional.of(airlineBdUpdated));
-        Assertions.assertDoesNotThrow(() -> {
-            Airline airlineBDUpdated = crudService.update(airline1);
-            Assertions.assertEquals(airlineBDUpdated.getName(), nameChanged);
-            Assertions.assertEquals(airlineBDUpdated.getId(), 1L);
-        });
-    }
+//    @Test
+//    void updateAirlineOk() {
+//        airline1.setName(nameChanged);
+//        when(repository.save(airlineBdUpdated)).thenReturn(airlineBdUpdated);
+//        when(repository.findByCode("A1")).thenReturn(Optional.of(airlineBdUpdated));
+//        Assertions.assertDoesNotThrow(() -> {
+//            Airline airlineBDUpdated = crudService.update(airline1);
+//            Assertions.assertEquals(airlineBDUpdated.getName(), nameChanged);
+//            Assertions.assertEquals(airlineBDUpdated.getId(), 1L);
+//        });
+//    }
 
     @Test
     void ifDataAirlineIsNullThenUpdateAirlineIsNotOk() {

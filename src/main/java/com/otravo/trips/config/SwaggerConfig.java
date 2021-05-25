@@ -38,7 +38,6 @@ public class SwaggerConfig implements WebMvcConfigurer {
     }
 
     private ApiInfo getApiInfo() {
-
         return new ApiInfoBuilder()
                 .title("Trips API Doc")
                 .description("Description of the Api Trips")
