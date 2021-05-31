@@ -1,15 +1,17 @@
 package com.otravo.trips.services;
 
-import com.otravo.trips.domain.*;
+
 import com.otravo.trips.exceptions.BusinessLogicException;
 import com.otravo.trips.exceptions.DomainException;
 import com.otravo.trips.repositories.TripRepository;
+import com.otravo.trips.domain.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,33 +46,27 @@ public class CrudTripService extends CrudServiceTemplate<Trip, Long> {
   }
 
   @Override
-
   public Trip create(Trip trip) throws BusinessLogicException, DomainException {
-    addPassengerFromBdOrThrowExceptionIfNotExist(trip);
-    addAirlinesFromBDOrThrowExceptionIfNotExits(trip);
-    addAirportsFromBdOrThrowExceptionIfNotExists(trip);
-    Flight outboundFligthBD = flightService.create(trip.getOutboundFlight());
-    trip.setOutboundFlight(outboundFligthBD);
-    Flight returnFligthBD = flightService.create(trip.getReturnFlight());
-    trip.setReturnFlight(returnFligthBD);
+    addPassengerOrCreateIfExist(trip);
+    addAirlinesAndAirportsFromBDOrThrowExceptionIfNotExits(trip.getOutboundFligths());
+    addAirlinesAndAirportsFromBDOrThrowExceptionIfNotExits(trip.getReturnrFligths());
+    rulesTripValidator.validateTripOrThrowException(trip);
+    List<Flight> outboundFligthsBd = createFligths(trip.getOutboundFligths());
+    trip.setOutboundFligths(outboundFligthsBd);
+    List<Flight> returnsFligthsBd = createFligths(trip.getReturnrFligths());
+    trip.setReturnFligths(returnsFligthsBd);
     Itinerary itineraryBD = itineraryService.create(trip.getItinerary());
     trip.setItinerary(itineraryBD);
-    rulesTripValidator.validateTripOrThrowException(trip);
     return super.create(trip);
   }
 
-  private void addAirportsFromBdOrThrowExceptionIfNotExists(Trip trip) throws BusinessLogicException {
-    Airport outbundOriginAirport = getAirportFromBdOrThrowExceptionIfNotExists(trip.getOutbundOriginAirport());
-    trip.setOutbundOriginAirport(outbundOriginAirport);
-
-    Airport outbundDestinationAirport = getAirportFromBdOrThrowExceptionIfNotExists(trip.getOutbundDestinationAirport());
-    trip.setOutbundDestinationAirport(outbundDestinationAirport);
-
-    Airport returnOriginAirport = getAirportFromBdOrThrowExceptionIfNotExists(trip.getReturnOriginAirport());
-    trip.setReturnOriginAirport(returnOriginAirport);
-
-    Airport returnDestinationAirport = getAirportFromBdOrThrowExceptionIfNotExists(trip.getReturnDestinationAirport());
-    trip.setReturnDestinationAirport(returnDestinationAirport);
+  private List<Flight> createFligths(List<Flight> flights) throws DomainException, BusinessLogicException {
+    List<Flight> resultBD = new ArrayList<>();
+    for(Flight flight:flights){
+      Flight flightBD = flightService.create(flight);
+      resultBD.add(flightBD);
+    }
+    return resultBD;
   }
 
   private Airport getAirportFromBdOrThrowExceptionIfNotExists(Airport airport) throws BusinessLogicException {
@@ -79,11 +75,15 @@ public class CrudTripService extends CrudServiceTemplate<Trip, Long> {
     else return aiportsBD.get(0);
   }
 
-  private void addAirlinesFromBDOrThrowExceptionIfNotExits(Trip trip) throws BusinessLogicException {
-    Airline outbundAirlineBD = getAirlineFromBdOrThowExceptionIfNotExist(trip.getOutbundAirline());
-    trip.setOutbundAirline(outbundAirlineBD);
-    Airline returnAirlineBD = getAirlineFromBdOrThowExceptionIfNotExist(trip.getReturnAirline());
-    trip.setReturnAirline(returnAirlineBD);
+  private void addAirlinesAndAirportsFromBDOrThrowExceptionIfNotExits(List<Flight> flights) throws BusinessLogicException {
+    for(Flight fligth:flights){
+      Airline airline = getAirlineFromBdOrThowExceptionIfNotExist(fligth.getAirline());
+      fligth.setAirline(airline);
+      Airport originAirport = getAirportFromBdOrThrowExceptionIfNotExists(fligth.getOriginAirport());
+      fligth.setOriginAirport(originAirport);
+      Airport destinationAirport = getAirportFromBdOrThrowExceptionIfNotExists(fligth.getDestinationAirport());
+      fligth.setDestinationAirport(destinationAirport);
+    }
   }
 
   private Airline getAirlineFromBdOrThowExceptionIfNotExist(Airline airline) throws BusinessLogicException {
@@ -92,10 +92,13 @@ public class CrudTripService extends CrudServiceTemplate<Trip, Long> {
     else return airlines.get(0);
   }
 
-  private void addPassengerFromBdOrThrowExceptionIfNotExist(Trip trip) throws BusinessLogicException {
+  private void addPassengerOrCreateIfExist(Trip trip) throws BusinessLogicException, DomainException {
     Passenger passenger = trip.getPassenger();
     List<Passenger> passengersBD = passengerService.findAll(Example.of(passenger));
-    if(passengersBD == null || passengersBD.isEmpty()) throw new BusinessLogicException("The passenger does not exists");
+    if(passengersBD == null || passengersBD.isEmpty()) {
+      Passenger newPassengerBD = passengerService.create(passenger);
+      trip.setPassenger(newPassengerBD);
+    }
     else {
       trip.setPassenger(passengersBD.get(0));
     }

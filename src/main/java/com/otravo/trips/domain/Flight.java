@@ -69,10 +69,10 @@ public class Flight implements CrudEntity<Flight> {
 
   @Override
   public void throwErrorIfUpdatingIsNotOk() throws DomainException {
-    /*if (code == null && originPoint == null && destinationPoint == null && airline == null)
+    if (code == null && airline == null
+            && originDate == null && destinationDate == null
+            && originAirport == null && destinationAirport == null)
       throw new DomainException("No attributes were modified");
-    if (originPoint != null) originPoint.throwErrorIfUpdatingIsNotOk();
-    if (destinationPoint != null) destinationPoint.throwErrorIfUpdatingIsNotOk();*/
   }
 
   @Override

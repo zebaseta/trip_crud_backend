@@ -15,40 +15,41 @@ import java.util.Date;
 
 @Service
 public class JwtServiceImpl implements JwtService {
-  @Value("${jwt.secret}")
-  private String privateKeyId;
+    @Value("${jwt.secret}")
+    private String privateKeyId;
 
-  @Override
-  public String createToken(String user, String pass) throws BusinessLogicException {
-    try {
-      Algorithm algorithm = Algorithm.HMAC256(privateKeyId);
-      Calendar calendar = Calendar.getInstance();
-      calendar.add(Calendar.HOUR_OF_DAY, 1);
-      String token =
-          JWT.create()
-              .withIssuedAt(new Date())
-              .withClaim("user", user)
-              .withClaim("pass", pass)
-              .withExpiresAt(calendar.getTime())
-              .withIssuer("auth0")
-              .sign(algorithm);
-      return token;
-    } catch (JWTCreationException exception) {
-      throw new BusinessLogicException("Cannot create token");
+    @Override
+    public String createToken(String id, String name, String email) throws BusinessLogicException {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(privateKeyId);
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.HOUR_OF_DAY, 1);
+            String token =
+                    JWT.create()
+                            .withIssuedAt(new Date())
+                            .withClaim("user_id", id)
+                            .withClaim("user_email", email)
+                            .withClaim("user_name", name)
+                            .withExpiresAt(calendar.getTime())
+                            .withIssuer("auth0")
+                            .sign(algorithm);
+            return token;
+        } catch (JWTCreationException exception) {
+            throw new BusinessLogicException("Cannot create token");
+        }
     }
-  }
 
-  @Override
-  public String verifyTokenAndGetUser(String token) throws BusinessLogicException {
-    try {
-      Algorithm algorithm = Algorithm.HMAC256(privateKeyId);
-      JWTVerifier verifier =
-          JWT.require(algorithm).withIssuer("auth0").build(); // Reusable verifier instance
-      DecodedJWT jwt = verifier.verify(token);
-      return jwt.getClaim("user").asString();
-    } catch (JWTVerificationException exception) {
-      throw new BusinessLogicException("Token is not valid");
+    @Override
+    public String verifyTokenAndGetUser(String token) throws BusinessLogicException {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(privateKeyId);
+            JWTVerifier verifier =
+                    JWT.require(algorithm).withIssuer("auth0").build(); // Reusable verifier instance
+            DecodedJWT jwt = verifier.verify(token);
+            return jwt.getClaim("user").asString();
+        } catch (JWTVerificationException exception) {
+            throw new BusinessLogicException("Token is not valid");
+        }
     }
-  }
 
 }

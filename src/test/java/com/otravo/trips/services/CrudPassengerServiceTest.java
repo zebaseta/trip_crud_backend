@@ -26,11 +26,11 @@ public class CrudPassengerServiceTest {
     private CrudPassengerService crudService;
 
     private List<Passenger> passengers;
-    private Passenger passenger1  = new Passenger("PASS1", "Jhon Doe", "jondoe@mail.com", LocalDate.now(), "XXX1-DDF441");
-    private Passenger passenger2  = new Passenger("PASS2", "Juan Doe", "jondoe@mail.com", LocalDate.now(), "XXX2-DDF442");
-    private Passenger passenger3  = new Passenger("PASS3", "Jhon Don", "jondoe@mail.com", LocalDate.now(), "XXX3-DDF443");
-    private Passenger passenger4  = new Passenger("PASS4", "Jhon Jhon", "jondoe@mail.com", LocalDate.now(), "XXX4-DDF444");
-    private Passenger passenger5  = new Passenger("PASS5", "Doe Doe", "jondoe@mail.com", LocalDate.now(), "XXX5-DDF445");
+    private Passenger passenger1  = new Passenger( "Jhon Doe", "jondoe@mail.com", LocalDate.now(), "XXX1-DDF441");
+    private Passenger passenger2  = new Passenger( "Juan Doe", "jondoe@mail.com", LocalDate.now(), "XXX2-DDF442");
+    private Passenger passenger3  = new Passenger( "Jhon Don", "jondoe@mail.com", LocalDate.now(), "XXX3-DDF443");
+    private Passenger passenger4  = new Passenger( "Jhon Jhon", "jondoe@mail.com", LocalDate.now(), "XXX4-DDF444");
+    private Passenger passenger5  = new Passenger( "Doe Doe", "jondoe@mail.com", LocalDate.now(), "XXX5-DDF445");
     private Passenger passengerBdCreated;
     private Passenger passengerBdUpdated;
     private String nameChanged = "passenger name changed";

@@ -1,11 +1,9 @@
 package com.otravo.trips.services;
 
 import com.otravo.trips.domain.Airline;
-import com.otravo.trips.domain.Airport;
 import com.otravo.trips.exceptions.DomainException;
 import com.otravo.trips.exceptions.BusinessLogicException;
 import com.otravo.trips.repositories.AirlineRepository;
-import com.otravo.trips.repositories.AirportRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;

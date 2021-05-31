@@ -18,14 +18,15 @@ public class RulesTripValidatorImpl implements RulesTripValidator {
 
     @Override
     public void validateTripOrThrowException(Trip trip) throws BusinessLogicException {
-        validateDatesOriginAndDestinyOkOrThrowException(trip.getOutboundFlight());
-        validateDatesOriginAndDestinyOkOrThrowException(trip.getReturnFlight());
-        validateOutboundFligthBeforeReturnFlightOrThrowException(trip.getOutboundFlight(), trip.getReturnFlight());
+        validateDatesOriginAndDestinationOkOrThrowException(trip.getOutboundFligths());
+        validateDatesOriginAndDestinationOkOrThrowException(trip.getReturnrFligths());
+        validateOutboundFligthBeforeReturnFlightOrThrowException(trip.getOutboundFligths(), trip.getReturnrFligths());
         validateTripIsNotInterceptedWithOtherTripsOrThrowException(trip);
     }
 
     private void validateTripIsNotInterceptedWithOtherTripsOrThrowException(Trip trip) throws BusinessLogicException {
-        List<Trip> olderTrips = trip.getPassenger().getTrips();
+        //TO DO WITH REFACTOR
+        /*List<Trip> olderTrips = trip.getPassenger().getTrips();
         Date new1 = trip.getOutboundFlight().getOriginDate();
         Date new2 = trip.getOutboundFlight().getDestinationDate();
         Date new3 = trip.getReturnFlight().getOriginDate();
@@ -41,18 +42,23 @@ public class RulesTripValidatorImpl implements RulesTripValidator {
             boolean isValid4 = new2.before(old1) && old4.before(new3);
             boolean isValid =  isValid1 || isValid2 || isValid3 || isValid4;
             if(!isValid) throw new BusinessLogicException("The trip is intercepted with other user's trips");
+        }*/
+    }
+
+    private void validateDatesOriginAndDestinationOkOrThrowException(List<Flight> flights) throws BusinessLogicException {
+        for(Flight flight:flights){
+            if (flight.getOriginDate().after(flight.getDestinationDate()))
+                throw new BusinessLogicException("The flight from " + flight.getOriginAirport().getCode() + " airport "
+                        + "to " + flight.getDestinationAirport().getCode() + " airport has arrival dates prior to the departure date");
         }
     }
 
-    private void validateDatesOriginAndDestinyOkOrThrowException(Flight flight) throws BusinessLogicException {
-        if (flight.getOriginDate().after(flight.getDestinationDate()))
-            throw new BusinessLogicException("The flight from " + flight.getOriginAirport().getCode() + " airport "
-                    + "to " + flight.getDestinationAirport().getCode() + " airport has arrival dates prior to the departure date");
-    }
-
-    private void validateOutboundFligthBeforeReturnFlightOrThrowException(Flight outboundFlight, Flight returnFlight) throws BusinessLogicException {
+    private void validateOutboundFligthBeforeReturnFlightOrThrowException(List<Flight> outboundFlights,
+                                                                          List<Flight> returnFlights) throws BusinessLogicException {
+        Flight outboundFlight = outboundFlights.get(0);
+        Flight returnFlight = returnFlights.get(returnFlights.size()-1);
         if (outboundFlight.getDestinationDate().after(returnFlight.getOriginDate()))
-            throw new BusinessLogicException("The trip has interception between outboundFlight and return flight");
+            throw new BusinessLogicException("The trip has interception between outboundFlights and return flights");
     }
 
 

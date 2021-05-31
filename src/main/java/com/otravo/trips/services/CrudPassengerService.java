@@ -20,8 +20,8 @@ public class CrudPassengerService extends CrudServiceTemplate<Passenger, Long> {
 
   @Override
   protected Optional<Passenger> findInBDBySystemId(Passenger passenger) {
-    if (passenger != null && passenger.getCode() != null)
-      return passengerRepository.findByCode(passenger.getCode());
+    if (passenger != null && passenger.getId() != null)
+      return passengerRepository.findById(passenger.getId());
     else return Optional.empty();
   }
 }

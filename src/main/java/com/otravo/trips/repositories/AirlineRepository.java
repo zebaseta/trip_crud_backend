@@ -1,7 +1,6 @@
 package com.otravo.trips.repositories;
 
 import com.otravo.trips.domain.Airline;
-import com.otravo.trips.domain.Passenger;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

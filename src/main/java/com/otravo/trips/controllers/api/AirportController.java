@@ -4,13 +4,10 @@ import com.otravo.trips.controllers.models.AirportModel;
 import com.otravo.trips.services.CrudServiceTemplate;
 import com.otravo.trips.services.JwtService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.ThreadContext;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import com.otravo.trips.domain.Airport;
 import com.otravo.trips.exceptions.DomainException;
 import com.otravo.trips.exceptions.BusinessLogicException;
@@ -19,11 +16,12 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.otravo.trips.constans.LogConstants.TRANSACTION_ID_IDENTIFICATION;
+import static com.otravo.trips.constants.LogConstants.TRANSACTION_ID_IDENTIFICATION;
 
 @Slf4j
 @RestController
 @RequestMapping(value = "/airports")
+@CrossOrigin(origins = "*", methods= {RequestMethod.GET,RequestMethod.POST, RequestMethod.DELETE,RequestMethod.PUT})
 public class AirportController {
     @Autowired
     private CrudServiceTemplate<Airport, Long> crudService;
@@ -48,7 +46,6 @@ public class AirportController {
             log.error(e.getMessage(),e);
             return ResponseEntity.badRequest().body("There was a problem: " + e.getMessage());
         }
-
     }
 
     @PostMapping()
@@ -70,6 +67,9 @@ public class AirportController {
             return ResponseEntity.badRequest().body("There was a problem creating the entity");
         }
     }
+
+
+
 
 }
 
