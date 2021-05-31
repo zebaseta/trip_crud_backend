@@ -68,5 +68,47 @@ public class AirlineController {
         }
     }
 
+    @PutMapping("/{code}")
+    public ResponseEntity<Object> update( @PathVariable String code, @RequestHeader("authorization") String token, @RequestBody AirlineModel model) {
+        try {
+            MDC.put("TRANSACTION-ID",TRANSACTION_ID_IDENTIFICATION+UUID.randomUUID().toString());
+            String user = jwtService.verifyTokenAndGetUser(token);
+            log.info("Arrive petition update airline from user "+user+" with data "+model.toString());
+            Airline airlineToUpdate = model.toEntity();
+            airlineToUpdate.setCode(code);
+            Airline resultBD = crudService.update(airlineToUpdate);
+            return ResponseEntity.ok().body(AirlineModel.buildFromEntity(resultBD));
+        } catch (DomainException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body("The entity is not ok: " + e.getMessage());
+        } catch (BusinessLogicException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body("There was a problem updating the entity: " + e.getMessage());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return ResponseEntity.badRequest().body("There was a problem updating the entity");
+        }
+    }
+
+    @DeleteMapping("/{code}")
+    public ResponseEntity<Object> delete(@RequestHeader("authorization") String token, @PathVariable String code) {
+        try {
+            MDC.put("TRANSACTION-ID", TRANSACTION_ID_IDENTIFICATION + UUID.randomUUID().toString());
+            String user = jwtService.verifyTokenAndGetUser(token);
+            log.info("Arrive petition delete airline from user " + user + " with code " + code);
+            Airline entityToDelete = new Airline(code);
+            crudService.delete(entityToDelete);
+            return ResponseEntity.ok().body("Deleting sucessfull");
+        } catch (BusinessLogicException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body("There was a problem with deleting the entity: " + e.getMessage());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return ResponseEntity.badRequest().body("There was a problem with deleting the entity");
+        }
+    }
+
+
+
 }
 
