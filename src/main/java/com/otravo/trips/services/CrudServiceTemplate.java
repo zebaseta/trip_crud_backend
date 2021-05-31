@@ -4,6 +4,7 @@ import com.otravo.trips.domain.CrudEntity;
 import com.otravo.trips.exceptions.DomainException;
 import com.otravo.trips.exceptions.BusinessLogicException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.ArrayList;
@@ -95,6 +96,16 @@ public abstract class CrudServiceTemplate<T extends CrudEntity, ID> {
             return entityBD;
         } catch (Exception e) {
             throw new BusinessLogicException("Could not update entity "+entityDataToUpdate.getClass().getSimpleName()+" with id " + entityDataToUpdate.getSystemIdInStringFormat());
+        }
+    }
+
+    public void delete(T entity) throws BusinessLogicException{
+        try{
+            repository.delete(entity);
+        }
+        catch (DataIntegrityViolationException e){
+            log.error("Se quiso eliminar la entidad de id "+entity.getSystemIdInStringFormat()+ " pero se encuentra asociada a otras entidades");
+            throw new BusinessLogicException("La entidad se encuentra asociada a otras entidades, no puede eliminarse");
         }
     }
 

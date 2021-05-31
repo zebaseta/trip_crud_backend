@@ -7,6 +7,7 @@ import com.otravo.trips.services.JwtService;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,11 +25,17 @@ public class LoginController {
     @Autowired
     private JwtService jwtService;
 
+    @Value("${admin.user}")
+    private String user;
+
+    @Value("${admin.pass}")
+    private String pass;
+
     @PostMapping()
     public ResponseEntity<Object> login(@RequestBody LoginModel model) {
         try {
             MDC.put("TRANSACTION-ID",TRANSACTION_ID_IDENTIFICATION+UUID.randomUUID().toString());
-            boolean isUserOk =  model.getEmail()!=null && model.getEmail().equals("sebastianzawrzykraj@gmail.com") && model.getPassword()!= null && model.getPassword().equals("1234");
+            boolean isUserOk =  model.getEmail()!=null && model.getEmail().equals(user) && model.getPassword()!= null && model.getPassword().equals(pass);
             if(!isUserOk) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User and pass are not ok");
             String token = jwtService.createToken("1","admin", model.getEmail());
             return ResponseEntity.ok().body(new TokenModel(token));

@@ -27,12 +27,37 @@ public class TripInModel {
         Collections.sort(itinerary);
         List<Flight> outboundFligths = new ArrayList<>();
         List<Flight> returnFligths = new ArrayList<>();
-        for(int i = 0; i<(itinerary.size()/2); i++){
-            outboundFligths.add(itinerary.get(i).toEntity());
+        boolean foundReturnFligth = false;
+        boolean finishIterator = false;
+        int iterator = 0;
+        Flight previusFligth = null;
+        while (!(foundReturnFligth || finishIterator)){
+            Flight currentFlight = itinerary.get(iterator).toEntity();
+            if(previusFligth !=null){
+                int milisecondsByDay = 86400000;
+                int days = (int) ((currentFlight.getOriginDate().getTime()-previusFligth.getDestinationDate().getTime()) / milisecondsByDay);
+                if(days>1){
+                    foundReturnFligth = true;
+                    returnFligths.add(currentFlight);
+                }
+                else{
+                    outboundFligths.add(currentFlight);
+                }
+            }
+            else{
+                outboundFligths.add(currentFlight);
+            }
+            previusFligth = currentFlight;
+            iterator++;
+            if(iterator==itinerary.size()){
+                finishIterator = true;
+            }
         }
-        for(int i = (itinerary.size()/2)+1; i< itinerary.size(); i++){
-            returnFligths.add(itinerary.get(i).toEntity());
+        for(int i=iterator;i<itinerary.size();i++){
+            Flight flight = itinerary.get(iterator).toEntity();
+            returnFligths.add(flight);
         }
+
         return new Itinerary(outboundFligths,returnFligths);
     }
 
