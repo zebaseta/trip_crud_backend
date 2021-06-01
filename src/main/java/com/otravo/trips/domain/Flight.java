@@ -1,5 +1,6 @@
 package com.otravo.trips.domain;
 
+import com.otravo.trips.controllers.models.FligthInModel;
 import com.otravo.trips.exceptions.DomainException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +14,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Flight implements CrudEntity<Flight> {
+public class Flight implements CrudEntity<Flight>, Comparable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -89,5 +90,13 @@ public class Flight implements CrudEntity<Flight> {
   @Override
   public String getSystemIdInStringFormat() {
     return getCode();
+  }
+
+  @Override
+  public int compareTo(Object o) {
+    Flight fligthToCompare = (Flight) o;
+    if(this.getDestinationDate().before(fligthToCompare.getOriginDate())) return -1;
+    else if (fligthToCompare.getDestinationDate().before(this.getOriginDate())) return 1;
+    return 0;
   }
 }

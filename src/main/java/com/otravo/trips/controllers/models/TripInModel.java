@@ -21,7 +21,7 @@ public class TripInModel {
     private String email;
     private String dateOfBirth;
     private String passport;
-    private List<FligthModel> itinerary;
+    private List<FligthInModel> itinerary;
 
     public Itinerary createItinerary() {
         Collections.sort(itinerary);

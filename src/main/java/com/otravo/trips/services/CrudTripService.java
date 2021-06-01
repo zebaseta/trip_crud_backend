@@ -49,7 +49,7 @@ public class CrudTripService extends CrudServiceTemplate<Trip, Long> {
   public Trip create(Trip trip) throws BusinessLogicException, DomainException {
     addPassengerOrCreateIfExist(trip);
     addAirlinesAndAirportsFromBDOrThrowExceptionIfNotExits(trip.getOutboundFligths());
-    addAirlinesAndAirportsFromBDOrThrowExceptionIfNotExits(trip.getReturnrFligths());
+    if(trip.getReturnrFligths()!=null && !trip.getReturnrFligths().isEmpty()) addAirlinesAndAirportsFromBDOrThrowExceptionIfNotExits(trip.getReturnrFligths());
     rulesTripValidator.validateTripOrThrowException(trip);
     List<Flight> outboundFligthsBd = createFligths(trip.getOutboundFligths());
     trip.setOutboundFligths(outboundFligthsBd);

@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ItineraryInModel {
-    private List<FligthModel> fligths;
+    private List<FligthInModel> fligths;
 
     public Itinerary toEntity() {
         Collections.sort(fligths);

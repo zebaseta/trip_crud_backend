@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.text.SimpleDateFormat;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,8 +16,8 @@ public class TripOutModel {
     private PassengerModel passenger;
     private ItineraryOutModel itinerary;
 
-    public static TripOutModel buildFromEntity(Trip trip) {
-        return new TripOutModel(trip.getId(),PassengerModel.buildFromEntity(trip.getPassenger()), ItineraryOutModel.buildFromEntity(trip.getItinerary()));
+    public static TripOutModel buildFromEntity(Trip trip, SimpleDateFormat simpleDateFormat) {
+        return new TripOutModel(trip.getId(),PassengerModel.buildFromEntity(trip.getPassenger()), ItineraryOutModel.buildFromEntity(trip.getItinerary(),simpleDateFormat));
     }
 
 }

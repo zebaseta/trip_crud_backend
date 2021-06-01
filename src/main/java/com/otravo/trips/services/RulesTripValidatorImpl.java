@@ -19,8 +19,10 @@ public class RulesTripValidatorImpl implements RulesTripValidator {
     @Override
     public void validateTripOrThrowException(Trip trip) throws BusinessLogicException {
         validateDatesOriginAndDestinationOkOrThrowException(trip.getOutboundFligths());
-        validateDatesOriginAndDestinationOkOrThrowException(trip.getReturnrFligths());
-        validateOutboundFligthBeforeReturnFlightOrThrowException(trip.getOutboundFligths(), trip.getReturnrFligths());
+        if(trip.getReturnrFligths()!=null && !trip.getReturnrFligths().isEmpty()){
+            validateDatesOriginAndDestinationOkOrThrowException(trip.getReturnrFligths());
+            validateOutboundFligthBeforeReturnFlightOrThrowException(trip.getOutboundFligths(), trip.getReturnrFligths());
+        }
         validateTripIsNotInterceptedWithOtherTripsOrThrowException(trip);
     }
 
