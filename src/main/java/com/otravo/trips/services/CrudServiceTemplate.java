@@ -104,8 +104,8 @@ public abstract class CrudServiceTemplate<T extends CrudEntity, ID> {
             repository.delete(entity);
         }
         catch (DataIntegrityViolationException e){
-            log.error("Se quiso eliminar la entidad de id "+entity.getSystemIdInStringFormat()+ " pero se encuentra asociada a otras entidades");
-            throw new BusinessLogicException("La entidad se encuentra asociada a otras entidades, no puede eliminarse");
+            log.error("It was tried to eliminate with this id "+entity.getSystemIdInStringFormat()+ " but the entity is associated with other entities");
+            throw new BusinessLogicException("The entity is associated with other entities, it could not be deleted");
         }
     }
 
