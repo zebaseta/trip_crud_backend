@@ -21,3 +21,5 @@ jwt.secret={secret_pass}
 server.servlet.context-path=/otravo
 management.endpoint.health.group.custom.show-components=always
 management.endpoint.health.group.custom.show-details=always
+admin.user={user_admin}
+admin.pass={pass_admin}
