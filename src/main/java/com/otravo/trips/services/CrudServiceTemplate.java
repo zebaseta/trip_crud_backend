@@ -101,11 +101,17 @@ public abstract class CrudServiceTemplate<T extends CrudEntity, ID> {
 
     public void delete(T entity) throws BusinessLogicException{
         try{
-            repository.delete(entity);
+            List<T> entitiesBD = repository.findAll(Example.of(entity));
+            if(entitiesBD!=null && !entitiesBD.isEmpty()) repository.delete(entitiesBD.get(0));
+            else throw new BusinessLogicException("The entity does not exists");
         }
         catch (DataIntegrityViolationException e){
             log.error("It was tried to eliminate with this id "+entity.getSystemIdInStringFormat()+ " but the entity is associated with other entities");
             throw new BusinessLogicException("The entity is associated with other entities, it could not be deleted");
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            throw new BusinessLogicException("The entity could not be deleted");
         }
     }
 

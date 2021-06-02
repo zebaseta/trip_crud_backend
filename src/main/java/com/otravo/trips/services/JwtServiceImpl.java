@@ -46,7 +46,7 @@ public class JwtServiceImpl implements JwtService {
             JWTVerifier verifier =
                     JWT.require(algorithm).withIssuer("auth0").build(); // Reusable verifier instance
             DecodedJWT jwt = verifier.verify(token);
-            return jwt.getClaim("user").asString();
+            return jwt.getClaim("user_name").asString();
         } catch (JWTVerificationException exception) {
             throw new BusinessLogicException("Token is not valid");
         }
