@@ -36,7 +36,7 @@ public class TripInModel {
             if(previusFligth !=null){
                 int milisecondsByDay = 86400000;
                 int days = (int) ((currentFlight.getOriginDate().getTime()-previusFligth.getDestinationDate().getTime()) / milisecondsByDay);
-                if(days > distanceDaysToReturn){
+                if(days >= distanceDaysToReturn){
                     foundReturnFligth = true;
                     returnFligths.add(currentFlight);
                 }
@@ -66,4 +66,7 @@ public class TripInModel {
         Passenger passenger =  new Passenger(name,email, DateUtils.buildLocalDate(dateOfBirth, pattern), passport);
         return new Trip(passenger, createItinerary(distanceDaysToReturn));
     }
+
+    //2021-06-03T07:00:10.357-0300
+    //Sat Jun 05 06:10:06 UYT 2021
 }
