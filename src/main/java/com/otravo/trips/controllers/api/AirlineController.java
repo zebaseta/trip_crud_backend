@@ -98,7 +98,7 @@ public class AirlineController {
             log.info("Arrive petition delete airline from user " + user + " with code " + code);
             Airline entityToDelete = new Airline(code);
             crudService.delete(entityToDelete);
-            return ResponseEntity.ok().body("Deleting sucessfull");
+            return ResponseEntity.ok().build();
         } catch (BusinessLogicException e) {
             log.error(e.getMessage());
             return ResponseEntity.badRequest().body("There was a problem with deleting the entity: " + e.getMessage());

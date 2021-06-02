@@ -100,7 +100,7 @@ public class AirportController {
             log.info("Arrive petition delete airport from user " + user + " with code " + code);
             Airport entityToDelete = new Airport(code);
             crudService.delete(entityToDelete);
-            return ResponseEntity.ok().body("Deleting sucessfull");
+            return ResponseEntity.ok().build();
         } catch (BusinessLogicException e) {
             log.error(e.getMessage());
             return ResponseEntity.badRequest().body("There was a problem with deleting the entity: " + e.getMessage());

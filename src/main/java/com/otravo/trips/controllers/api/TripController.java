@@ -106,7 +106,7 @@ public class TripController {
             log.info("Arrive petition delete trip from user " + user + " with id " + id);
             Trip entityToDelete = new Trip(id);
             tripService.delete(entityToDelete);
-            return ResponseEntity.ok().body("Deleting sucessfull");
+            return ResponseEntity.ok().build();
         } catch (BusinessLogicException e) {
             log.error(e.getMessage());
             return ResponseEntity.badRequest().body("There was a problem with deleting the entity: " + e.getMessage());
