@@ -49,7 +49,8 @@ public class TripInModel {
             }
             previusFligth = currentFlight;
             iterator++;
-            if(iterator==itinerary.size()-1){
+            boolean finishIteration = iterator==itinerary.size();
+            if(finishIteration){
                 finishIterator = true;
             }
         }
