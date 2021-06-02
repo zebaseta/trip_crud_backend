@@ -1,9 +1,11 @@
 package com.otravo.trips.domain;
 
 import com.otravo.trips.exceptions.DomainException;
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import javax.persistence.*;
 import java.util.List;
@@ -20,16 +22,22 @@ public class Trip implements CrudEntity<Trip> {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "passenger_id", nullable = false)
+    @NotNull
+    @JoinColumn(name = "passenger_id")
     private Passenger passenger;
 
-    @OneToOne
-    @JoinColumn(nullable = false, unique = true, name = "itinerary_id")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @NotNull
+    @JoinColumn(unique = true, name = "itinerary_id")
     private Itinerary itinerary;
 
     public Trip(Passenger passenger, Itinerary itinerary) {
         this.passenger = passenger;
         this.itinerary = itinerary;
+    }
+
+    public Trip(Long id) {
+        this.id = id;
     }
 
     public Trip(Passenger passenger) {

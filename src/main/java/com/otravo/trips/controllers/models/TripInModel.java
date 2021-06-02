@@ -23,7 +23,7 @@ public class TripInModel {
     private String passport;
     private List<FligthInModel> itinerary;
 
-    public Itinerary createItinerary() {
+    public Itinerary createItinerary(int distanceDaysToReturn) {
         Collections.sort(itinerary);
         List<Flight> outboundFligths = new ArrayList<>();
         List<Flight> returnFligths = new ArrayList<>();
@@ -36,7 +36,7 @@ public class TripInModel {
             if(previusFligth !=null){
                 int milisecondsByDay = 86400000;
                 int days = (int) ((currentFlight.getOriginDate().getTime()-previusFligth.getDestinationDate().getTime()) / milisecondsByDay);
-                if(days>1){
+                if(days > distanceDaysToReturn){
                     foundReturnFligth = true;
                     returnFligths.add(currentFlight);
                 }
@@ -61,8 +61,8 @@ public class TripInModel {
         return new Itinerary(outboundFligths,returnFligths);
     }
 
-    public Trip toEntity(String pattern) {
+    public Trip toEntity(String pattern, int distanceDaysToReturn) {
         Passenger passenger =  new Passenger(name,email, DateUtils.buildLocalDate(dateOfBirth, pattern), passport);
-        return new Trip(passenger, createItinerary());
+        return new Trip(passenger, createItinerary(distanceDaysToReturn));
     }
 }

@@ -2,6 +2,7 @@ package com.otravo.trips.controllers.api;
 
 import com.otravo.trips.controllers.models.TripInModel;
 import com.otravo.trips.controllers.models.TripOutModel;
+import com.otravo.trips.domain.Airline;
 import com.otravo.trips.domain.Passenger;
 import com.otravo.trips.domain.Trip;
 import com.otravo.trips.exceptions.BusinessLogicException;
@@ -38,6 +39,9 @@ public class TripController {
     @Autowired
     private JwtService jwtService;
 
+    @Value("${trips.distance-days-to-return}")
+    private int distanceDaysToReturn;
+
     @Value("${passenger.birth.pattern}")
     private String pattern;
 
@@ -61,7 +65,6 @@ public class TripController {
                 }
             } else {
                 List<Trip> trips = tripService.findAll();
-
                 return ResponseEntity.ok().body(trips.stream().map(t->TripOutModel.buildFromEntity(t,simpleDateFormat)).collect(Collectors.toList()));
             }
         } catch (BusinessLogicException e) {
@@ -79,7 +82,7 @@ public class TripController {
             MDC.put("TRANSACTION-ID", TRANSACTION_ID_IDENTIFICATION + UUID.randomUUID().toString());
             String user = jwtService.verifyTokenAndGetUser(token);
             log.info("Arrive petition create trip from user " + user + " with data " + model.toString());
-            Trip resultBD = tripService.create(model.toEntity(pattern));
+            Trip resultBD = tripService.create(model.toEntity(pattern,distanceDaysToReturn));
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
             TripOutModel result = buildFromEntity(resultBD,simpleDateFormat);
             return ResponseEntity.ok().body(result);
@@ -92,6 +95,24 @@ public class TripController {
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             return ResponseEntity.badRequest().body("There was a problem creating the entity");
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> delete(@RequestHeader("authorization") String token, @PathVariable Long id) {
+        try {
+            MDC.put("TRANSACTION-ID", TRANSACTION_ID_IDENTIFICATION + UUID.randomUUID().toString());
+            String user = jwtService.verifyTokenAndGetUser(token);
+            log.info("Arrive petition delete trip from user " + user + " with id " + id);
+            Trip entityToDelete = new Trip(id);
+            tripService.delete(entityToDelete);
+            return ResponseEntity.ok().body("Deleting sucessfull");
+        } catch (BusinessLogicException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body("There was a problem with deleting the entity: " + e.getMessage());
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return ResponseEntity.badRequest().body("There was a problem with deleting the entity");
         }
     }
 

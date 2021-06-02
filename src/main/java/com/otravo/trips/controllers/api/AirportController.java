@@ -36,7 +36,7 @@ public class AirportController {
         try {
             MDC.put("TRANSACTION-ID",TRANSACTION_ID_IDENTIFICATION+UUID.randomUUID().toString());
             String user = jwtService.verifyTokenAndGetUser(token);
-            log.info("Arrive petition find alla airports from user "+user);
+            log.info("Arrive petition find airports from user "+user);
             jwtService.verifyTokenAndGetUser(token);
             List<Airport> aiports = crudService.findAll();
             return ResponseEntity.ok().body(aiports.stream().map(AirportModel::buildFromEntity).collect(Collectors.toList()));
