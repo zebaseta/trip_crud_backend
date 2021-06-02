@@ -49,12 +49,12 @@ public class TripInModel {
             }
             previusFligth = currentFlight;
             iterator++;
-            if(iterator==itinerary.size()){
+            if(iterator==itinerary.size()-1){
                 finishIterator = true;
             }
         }
         for(int i=iterator;i<itinerary.size();i++){
-            Flight flight = itinerary.get(iterator).toEntity();
+            Flight flight = itinerary.get(i).toEntity();
             returnFligths.add(flight);
         }
 
