@@ -28,5 +28,7 @@ Funcionalidades destacadas en el back
 - Seguridad mediante JWT, con un token que expira luego de 1 hora.
 
 
-Modelo entidad relación
+Modelo entidad relación:
+
+
 ![image](https://user-images.githubusercontent.com/48572502/121543293-2e809200-c9df-11eb-9a83-d1315e0cd089.png)
