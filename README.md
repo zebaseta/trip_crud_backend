@@ -26,3 +26,7 @@ Funcionalidades destacadas en el back
 - Cache de aeropuertos y aerolineas
 - Trazabilidad de requests generado tokens por cada request y generando logs con los correspondientes tokens de request
 - Seguridad mediante JWT, con un token que expira luego de 1 hora.
+
+
+Modelo entidad relación
+![image](https://user-images.githubusercontent.com/48572502/121543293-2e809200-c9df-11eb-9a83-d1315e0cd089.png)
