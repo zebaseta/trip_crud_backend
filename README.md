@@ -32,3 +32,16 @@ Modelo entidad relación:
 
 
 ![image](https://user-images.githubusercontent.com/48572502/121543293-2e809200-c9df-11eb-9a83-d1315e0cd089.png)
+
+
+Diagrama de clases del dominio:
+
+![image](https://user-images.githubusercontent.com/48572502/121544456-1f4e1400-c9e0-11eb-86d5-ae159d2aa739.png)
+
+
+Diagrama de clases de los servicios 
+
+![image](https://user-images.githubusercontent.com/48572502/121544356-08a7bd00-c9e0-11eb-9bee-68820bafdb1c.png)
+
+
+
