@@ -25,8 +25,8 @@ Funcionalidades destacadas en el back
 - Alta y baja viaje
 - Cache de aeropuertos y aerolineas
 - Trazabilidad de requests generado tokens por cada request y generando logs con los correspondientes tokens de request
-- Seguridad mediante JWT, con un token que expira luego de 1 hora.
-
+- Seguridad mediante JWT, con un token que expira luego de 1 hora (parametrizable).
+- Separación de vuelos de ida y de vuelta en un viaje. Se toma como decisión que si pasan más de 1 día (parametrizable)  de un vuelo al siguiente el segundo es un vuelo de vuelta. 
 
 Modelo entidad relación:
 
