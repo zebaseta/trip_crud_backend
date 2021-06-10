@@ -5,6 +5,7 @@ Los viajes pueden componerse un por un conjunto de vuelos de ida y un conjunto d
 * Api de swagger backend: https://springboot-otravo-trips.herokuapp.com/otravo/v1/swagger-ui.html (heroku)
 * Frontend: https://master.dcj0k2xihltxq.amplifyapp.com/ (aws)
 * Uri de healtcheck (para monitorear mediante un hearthbeat por ejemplo): https://springboot-otravo-trips.herokuapp.com/otravo/v1/actuator/health/custom
+* Papertrail: https://my.papertrailapp.com/systems/springboot-otravo-trips/events?focus=1339634665387204618 (logs centralizados)
 
 Funcionalidades destacadas en el front:
 - Login de usuario
